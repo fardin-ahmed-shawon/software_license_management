@@ -1,28 +1,55 @@
 <?php
+
+
 // licence creation and verification example
 function generate_license_key() {
     return strtoupper(bin2hex(random_bytes(4))) . '-' . strtoupper(bin2hex(random_bytes(4)));
 }
+// $license = generate_license_key();
+// echo "Generated License: " . $license;
 
-$license = generate_license_key();
-echo "Generated License: " . $license;
 
-
-$license_key = 'ABC123-XYZ789';
+// Post data
+$license_key = '123XYZ';
 $current_domain = $_SERVER['HTTP_HOST'];
+$current_domain = 'php.easytechx.com';
 
-$verify_url = "https://your-license-server.com/api/verify.php?license={$license_key}&domain={$current_domain}";
 
-$response = file_get_contents($verify_url);
+$verify_url = "http://localhost/test/software_license_management/license%20server/api/verify.php";
+
+// Use cURL to send POST request
+$post_fields = [
+    'license' => $license_key,
+    'domain'  => $current_domain
+];
+
+$ch = curl_init($verify_url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
 $data = json_decode($response, true);
 
 if ($data['status'] === 'valid') {
-    echo "✅ License Verified!";
+
+    echo "License Verified!";
+
     // continue running app
 } elseif ($data['status'] === 'invalid_domain') {
-    die("❌ This license is not valid for this domain.");
+
+    die("Your license is not valid for this domain.");
+
 } elseif ($data['status'] === 'blocked') {
-    die("❌ This license has been blocked.");
+
+    die("Your license has been blocked.");
+
 } else {
-    die("❌ Invalid License.");
+
+    die("Invalid License.");
+    
 }
+
+?>

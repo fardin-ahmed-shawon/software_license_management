@@ -1,17 +1,9 @@
 <?php
-// config.php
-$host = 'localhost';
-$db   = 'license_db';
-$user = 'root';
-$pass = '';
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require '../dbConnection.php';
+include 'config.php'; 
 ?>
 
 <!-- index.php -->
-<?php include 'config.php'; ?>
 <!DOCTYPE html>
 <html>
 <head>
